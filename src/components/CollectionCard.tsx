@@ -11,7 +11,7 @@ function CollectionCard({ col }: { col: Collection }) {
     <li>
       <NavLink
         to={`/shop/${col.name}`}
-        className="group relative flex flex-col justify-between px-5 sm:px-6 pt-5 sm:pt-6 pb-4 sm:pb-5 h-40 sm:h-45 rounded-2xl border border-black/20 dark:border-white/20 bg-black/5 dark:bg-white/5 hover:bg-white/15 dark:hover:bg-black/10 backdrop-blur-md transition-all duration-300 shadow-xs"
+        className="group relative flex flex-col justify-between px-5 sm:px-6 pt-5 sm:pt-6 pb-4 sm:pb-5 h-40 sm:h-45 rounded-2xl border border-black/20 dark:border-white/20 bg-white/80 xs:bg-black/5 dark:bg-white/5 hover:bg-white/15 dark:hover:bg-black/10 backdrop-blur-md transition-all duration-300 shadow-xs"
       >
         <div className="flex flex-col space-y-2">
           <span className="text-xs sm:text-sm lg:text-xs sm:tracking-tight font-medium text-zinc-600 dark:text-zinc-300">

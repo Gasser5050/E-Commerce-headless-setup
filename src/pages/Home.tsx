@@ -35,11 +35,11 @@ function Home() {
       </div>
 
       <section className="space-y-6">
-        <div className="flex flex-col space-y-1">
+        <div className="flex flex-col space-y-1 text-center xs:text-left">
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
             Browse Collections
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-gray-500 text-xs sm:text-sm xs:text-zinc-500 dark:text-zinc-300">
             Select a category to view live inventory levels.
           </p>
         </div>

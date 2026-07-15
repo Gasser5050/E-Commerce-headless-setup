@@ -1,15 +1,13 @@
 import axios from "axios";
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   console.log("🟢 Backend triggered! URL is:", request.url);
 
+  const { searchParams } = new URL(request.url);
+  const category = searchParams.get("category");
+
   try {
-    return new Response(JSON.stringify(""), {
-      status: 200,
-      headers: {
-        "Content-type": "application/json"
-      }
-    });
+    // const response = axios.get("");
   } catch (error) {
     let errorStatus = 500;
     let errorMessage = "Internal Server Error";
@@ -20,8 +18,6 @@ export async function POST(request: Request) {
       console.error(`❌ Backend Axios Error (${errorStatus}):`, errorMessage);
     } else if (error instanceof Error) {
       console.error(`Secure Server Log: ${error.message}`);
-      errorMessage = "Invalid JSON payload sent to server.";
-      errorStatus = 400;
     } else {
       console.error("Secure Server Log: An unknown error type was caught.");
     }
