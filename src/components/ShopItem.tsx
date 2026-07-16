@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getSwatchColor } from "../utils/getSwatchColor";
 import type { Product } from "../types/Types";
 
 function ShopItem({ product }: { product: Product }) {
@@ -15,7 +16,7 @@ function ShopItem({ product }: { product: Product }) {
   }
 
   return (
-    <li className="flex flex-col space-y-1 bg-zinc-400 h-full">
+    <li className="flex flex-col text-black space-y-0.5 bg-white/30 backdrop-blur-md dark:bg-zinc-200 h-full rounded-sm">
       <div className="flex flex-col space-y-px">
         <img
           src={currentVariantImg}
@@ -27,14 +28,20 @@ function ShopItem({ product }: { product: Product }) {
             <li key={variant._key}>
               <button
                 onClick={() => handleColorChange(index)}
-                className={`${activeColorVariantIdx === index && "ring-2 ring-white"} border w-4 h-4 rounded-full bg-slate-800 hover:scale-105 cursor-pointer`}
+                className={`${activeColorVariantIdx === index ? "ring-2 ring-white" : ""} border w-4 h-4 rounded-full hover:scale-105 cursor-pointer`}
+                style={{
+                  backgroundColor: getSwatchColor(
+                    variant.colorName,
+                    variant.colorHex
+                  )
+                }}
               ></button>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="px-1 pb-0.5">
+      <div className="px-1.5 pb-0.5">
         <h2 className="xs:text-lg sm:text-xl md:text-lg font-semibold tracking-tighter">
           {product.name}
         </h2>

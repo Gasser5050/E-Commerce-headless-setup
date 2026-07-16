@@ -17,6 +17,7 @@ export type ColorVariant = {
   _key: string;
   _type: "colorVariant";
   colorName: string;
+  colorHex?: string;
   variantImages: SanityImage[];
   inventory: SizeStock[];
 };
