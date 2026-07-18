@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getSwatchColor } from "../utils/getSwatchColor";
 import type { Product } from "../types/Types";
 
@@ -15,20 +15,40 @@ function ShopItem({ product }: { product: Product }) {
     setActiveImageIdx(0);
   }
 
+  useEffect(() => {
+    if (!product.colorVariants) return;
+    const preloadedImages: HTMLImageElement[] = [];
+
+    product.colorVariants.forEach((variant, index) => {
+      if (index === activeColorVariantIdx) return;
+      const url = variant.variantImages?.[0]?.url;
+
+      if (url) {
+        const img = new Image();
+        img.src = url;
+        preloadedImages.push(img);
+      }
+    });
+
+    return () => {
+      preloadedImages.length = 0;
+    };
+  }, [product.colorVariants, activeColorVariantIdx]);
+
   return (
-    <li className="flex flex-col text-black space-y-0.5 bg-white/30 backdrop-blur-md dark:bg-zinc-200 h-full rounded-sm">
+    <li className="flex flex-col text-black dark:text-black space-y-0.5 bg-zinc-200 rounded-md border dark:border-white">
       <div className="flex flex-col space-y-px">
         <img
           src={currentVariantImg}
           alt=""
-          className="aspect-video object-cover rounded-t-sm"
+          className="aspect-square object-cover rounded-t-md"
         />
-        <ul className="flex space-x-1 px-1 pt-0.5">
+        <ul className="flex space-x-1 px-1 pt-0.5 line-clamp-1">
           {product.colorVariants?.map((variant, index) => (
             <li key={variant._key}>
               <button
                 onClick={() => handleColorChange(index)}
-                className={`${activeColorVariantIdx === index ? "ring-2 ring-white" : ""} border w-4 h-4 rounded-full hover:scale-105 cursor-pointer`}
+                className={`${activeColorVariantIdx === index ? "ring-1 ring-black" : ""} border border-black/50 w-4 h-4 rounded-full hover:scale-105 cursor-pointer`}
                 style={{
                   backgroundColor: getSwatchColor(
                     variant.colorName,

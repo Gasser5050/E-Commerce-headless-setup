@@ -6,8 +6,8 @@ const categories = ["shirts", "hoodies", "pants", "shoes", "jackets"];
 export async function GET(request: Request) {
   console.log("🟢 Backend triggered! URL is:", request.url);
   const { searchParams } = new URL(request.url);
-
   const category = searchParams.get("category");
+
   if (!category)
     return new Response(
       JSON.stringify({ error: "Missing category parameter" }),
@@ -35,7 +35,14 @@ export async function GET(request: Request) {
     const projectID = process.env.SANITY_PROJECT_ID;
     const dataset = process.env.SANITY_DATASET || "production";
     const sanityURL = `https://${projectID}.api.sanity.io/v2026-07-01/data/query/${dataset}`;
-    const query = `*[_type == "product" && category == $category && !isArchived]`;
+
+    const pageNum = parseInt(searchParams.get("page") || "1", 10);
+    const limitNum = parseInt(searchParams.get("limit") || "10", 10);
+
+    const start = (pageNum - 1) * limitNum;
+    const end = start + limitNum;
+
+    const query = `*[_type == "product" && category == $category && !isArchived] | order(_createdAt desc) [${start}...${end}]`;
 
     const response = await axios.get(sanityURL, {
       params: {
@@ -55,7 +62,7 @@ export async function GET(request: Request) {
           if (imgRef) {
             const [, id, dimensions, extension] = imgRef.split("-");
 
-            url = `https://cdn.sanity.io/images/${projectID}/${dataset}/${id}-${dimensions}.${extension}`;
+            url = `https://cdn.sanity.io/images/${projectID}/${dataset}/${id}-${dimensions}.${extension}?w=600&auto=format&q=75`;
           }
 
           return {
@@ -73,12 +80,18 @@ export async function GET(request: Request) {
       };
     });
 
-    return new Response(JSON.stringify(products), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
+    return new Response(
+      JSON.stringify({
+        products,
+        hasMore: products.length === limitNum
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json"
+        }
       }
-    });
+    );
   } catch (error) {
     let errorStatus = 500;
     let errorMessage = "Internal Server Error";

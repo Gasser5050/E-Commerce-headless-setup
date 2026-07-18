@@ -5,8 +5,7 @@ import Home from "./pages/Home";
 import NotFoundErrorPage from "./pages/Errors/NotFoundErrorPage";
 import RouteErrorPage from "./pages/Errors/RouteErrorPage";
 import Shop from "./pages/Shop";
-import ShopCategory from "./pages/ShopCategory";
-
+import ShopCategoryWrapper from "./components/ShopCategoryWrapper";
 
 export const router = createBrowserRouter([
   {
@@ -23,7 +22,7 @@ export const router = createBrowserRouter([
               { index: true, element: <Shop /> },
               {
                 path: ":category",
-                element: <ShopCategory />,
+                element: <ShopCategoryWrapper />,
                 loader: loadShopItems
               }
             ]

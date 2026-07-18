@@ -24,7 +24,9 @@ export async function loadShopItems({ request, params }: LoaderFunctionArgs) {
     const response = await axios.get("/api/get-shop-items", {
       signal: request.signal,
       params: {
-        category: category.toLowerCase()
+        category: category.toLowerCase(),
+        page: 1,
+        limit: 10
       }
     });
 
