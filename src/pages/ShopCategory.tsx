@@ -1,8 +1,8 @@
-import { useLoaderData, useParams } from "react-router-dom";
-import type { Product } from "../types/Types";
-import ShopItem from "../components/ShopItem";
-import { useState } from "react";
 import axios from "axios";
+import type { Product } from "../types/Types";
+import { useState } from "react";
+import { useLoaderData, useParams } from "react-router-dom";
+import ShopItem from "../components/ShopItem";
 
 type initialData = {
   products: Product[];
