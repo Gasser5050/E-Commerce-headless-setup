@@ -5,6 +5,7 @@ import NotFoundErrorPage from "./pages/Errors/NotFoundErrorPage";
 import RouteErrorPage from "./pages/Errors/RouteErrorPage";
 import AppLayout from "./layouts/AppLayout";
 import Home from "./pages/Home";
+import About from "./pages/About";
 import Shop from "./pages/Shop";
 import ShopCategoryWrapper from "./components/ShopCategoryWrapper";
 import ProductPage from "./pages/ProductPage";
@@ -36,7 +37,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "About",
-            element: <h1 className="text-black">About Us</h1>
+            element: <About />
           },
 
           { path: "*", element: <NotFoundErrorPage /> }
