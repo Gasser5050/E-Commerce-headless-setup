@@ -16,11 +16,6 @@ function ProductPage() {
       ? Math.floor(((product.price - product.salePrice) / product.price) * 100)
       : 0;
 
-  const currentImgUrl =
-    product.colorVariants?.[activeColorVariantIdx].variantImages?.[
-      activeImageIdx
-    ].url;
-
   function handleMobileIndicatorClick(index: number) {
     setActiveImageIdx(index);
 
