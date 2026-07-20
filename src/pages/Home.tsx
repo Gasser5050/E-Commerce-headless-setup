@@ -47,7 +47,7 @@ function Home() {
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
               Browse Collections
             </h2>
-            <p className="text-gray-500 text-xs sm:text-sm xs:text-zinc-500 dark:text-zinc-300">
+            <p className="text-gray-800 xs:text-zinc-500 text-sm xs:text-xs sm:text-sm  dark:text-zinc-300">
               Select a category to view live inventory levels.
             </p>
           </div>

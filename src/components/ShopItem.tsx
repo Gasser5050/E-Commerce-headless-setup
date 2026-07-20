@@ -38,7 +38,7 @@ function ShopItem({ product }: { product: Product }) {
   }, [product.colorVariants, activeColorVariantIdx]);
 
   return (
-    <li className="flex flex-col text-black dark:text-black space-y-0.5 bg-zinc-200 rounded-md border dark:border-white">
+    <li className="flex flex-col text-black dark:text-black space-y-0.5 bg-zinc-200 rounded-md border">
       <div className="flex flex-col space-y-px">
         <NavLink to={product._id} className={"overflow-hidden"}>
           <img
@@ -87,10 +87,13 @@ function ShopItem({ product }: { product: Product }) {
             </NavLink>
           </p>
 
-          <div className="pb-1 xs:pb-1.5 xs:pr-0.5 text-xs xs:text-sm sm:text-md md:text-md">
-            <button className="px-1.5 xs:px-2 py-1 rounded-md xs:rounded-lg text-black bg-yellow-400 hover:bg-yellow-500 duration-150 ease-in-out cursor-pointer">
-              Add to Cart
-            </button>
+          <div className="pb-1 xs:pb-1.75 sm:pb-2 xs:pr-px text-xs xs:text-sm sm:text-md md:text-md tracking-wider">
+            <NavLink
+              to={product._id}
+              className="px-1.5 py-1 xs:py-1.5 xs:px-2 sm:px-3 rounded-sm xs:rounded-md  text-black bg-yellow-400 hover:bg-yellow-500 duration-150 ease-in-out cursor-pointer"
+            >
+              Buy Now
+            </NavLink>
           </div>
         </div>
       </div>
