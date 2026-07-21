@@ -38,5 +38,7 @@ export type SizeStock = {
   _key: string;
   _type: "sizeStock";
   shirtSize: string;
+  pantSize: string;
+  shoeSize: string;
   stockCount: number;
 };

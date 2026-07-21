@@ -211,7 +211,10 @@ function ProductPage() {
                                 : ""
                             )}
                           >
-                            {size.shirtSize}
+                            {size.shirtSize ??
+                              size.pantSize ??
+                              size.shoeSize ??
+                              "N/A"}
                           </button>
                         </li>
                       );
@@ -304,7 +307,10 @@ function ProductPage() {
                             : ""
                         )}
                       >
-                        {size.shirtSize}
+                        {size.shirtSize ??
+                          size.pantSize ??
+                          size.shoeSize ??
+                          "N/A"}
                       </button>
                     </li>
                   );
