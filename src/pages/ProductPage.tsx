@@ -1,13 +1,25 @@
-import { cn } from "../utils/cn";
-import type { Product } from "../types/Types";
 import { useEffect, useRef, useState } from "react";
+import type { Product } from "../types/Types";
+import { cn } from "../utils/cn";
 import { useLoaderData } from "react-router-dom";
+import DropDownBox from "../components/DropDownBox";
 
 function ProductPage() {
   const product = useLoaderData<Product>();
 
   const [activeColorVariantIdx, setActiveColorVariantIdx] = useState(0);
+  const [activeSelectedSizeIdx, setActiveSelectedSizeIdx] = useState<
+    number | null
+  >(null);
+  const [selectedItemQuantity, setSelectedItemQuantity] = useState(1);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+
+  const totalStockCount =
+    activeSelectedSizeIdx !== null
+      ? (product.colorVariants?.[activeColorVariantIdx]?.inventory?.[
+          activeSelectedSizeIdx
+        ]?.stockCount ?? 0)
+      : 0;
 
   const mobileScrollRef = useRef<HTMLUListElement>(null);
 
@@ -65,6 +77,7 @@ function ProductPage() {
 
         {/* Image Gallery */}
         <div className="md:flex md:space-x-4 lg:space-x-5 xl:space-x-8">
+          {/* Img */}
           <div className="md:w-[60%] lg:w-[55%] xl:w-1/2 flex flex-col justify-center space-y-1">
             <ul
               ref={mobileScrollRef}
@@ -125,7 +138,7 @@ function ProductPage() {
             <p className="font-bold pt-2 tracking-tight leading-7">
               Choose from the available colors below.
             </p>
-            <ul className="flex justify-start space-x-1">
+            <ul className="grid grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 gap-1.25">
               {product.colorVariants?.map((variant, index) => {
                 const isActive = activeColorVariantIdx === index;
 
@@ -135,12 +148,14 @@ function ProductPage() {
                       onClick={() => {
                         setActiveColorVariantIdx(index);
                         handleMobileIndicatorClick(0);
+                        setActiveSelectedSizeIdx(null);
+                        setSelectedItemQuantity(1);
                       }}
                       className={cn(
-                        "rounded-md overflow-hidden transition-all duration-150 cursor-pointer",
+                        "xs:px-5.5 sm:px-6 md:px-3.25 lg:px-4.25 xl:px-5.25 rounded-md overflow-hidden cursor-pointer",
                         isActive
                           ? "outline-3 outline-zinc-800 dark:outline-white scale-105"
-                          : "outline-0 hover:outline-zinc-400 opacity-80 hover:opacity-100"
+                          : "opacity-80 hover:opacity-100"
                       )}
                     >
                       <img
@@ -155,18 +170,78 @@ function ProductPage() {
             </ul>
           </div>
 
-          {/* Product Details - Shown on md screens */}
+          {/* Product - Shown on md screens */}
           <div className="hidden md:flex w-[40%] lg:w-[45%] xl:w-1/2  flex-col justify-between">
-            <div>
-              <h1 className="text-3xl font-mono tracking-tight">
-                {product.name}
-              </h1>
-              <p className="text-lg">{product.description}</p>
+            {/* Product Details - Shown on md screens */}
+            <div className="space-y-6">
+              {/* Title */}
+              <div>
+                <h1 className="text-3xl font-mono tracking-tight">
+                  {product.name}
+                </h1>
+                <p className="text-lg">{product.description}</p>
+              </div>
+
+              {/* Sizes / Quantity */}
+              <div className="space-y-3">
+                {/* Sizes */}
+                <div className="">
+                  <p className="font-bold tracking-tight leading-7">
+                    Select Size
+                  </p>
+                  <ul className="grid grid-cols-3 gap-2">
+                    {product.colorVariants?.[
+                      activeColorVariantIdx
+                    ].inventory.map((size, index) => {
+                      return (
+                        <li key={size._key} className="flex">
+                          <button
+                            onClick={() => {
+                              if (size.stockCount === 0) return;
+                              setActiveSelectedSizeIdx(index);
+                              setSelectedItemQuantity(1);
+                            }}
+                            className={cn(
+                              "grow py-1 text-center border border-black/20 dark:border-white/25 hover:border-black dark:hover:border-white rounded-sm cursor-pointer",
+                              activeSelectedSizeIdx === index
+                                ? "border-black dark:border-white"
+                                : "",
+                              size.stockCount === 0
+                                ? "opacity-40 line-through border-black/20 hover:border-black/20 pointer-events-none"
+                                : ""
+                            )}
+                          >
+                            {size.shirtSize}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
+                {/* Quantity */}
+                <div className="flex items-center space-x-2">
+                  <DropDownBox
+                    key={`${activeColorVariantIdx}-${activeSelectedSizeIdx}`}
+                    placeholder="Quantity: "
+                    listSize={totalStockCount}
+                    selectedValue={selectedItemQuantity}
+                    updateSelectedValue={setSelectedItemQuantity}
+                    disabled={activeSelectedSizeIdx === null}
+                  />
+
+                  {totalStockCount !== 0 && totalStockCount <= 4 && (
+                    <p className="text-red-500">
+                      Only {totalStockCount} left in stock.
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-col">
-              {/* Product Pricing - Shown on md screens */}
-              <div className="flex justify-between items-end px-0.5">
+            {/* Product Pricing - Shown on md screens */}
+            <div className="flex flex-col space-y-2">
+              <div className="flex w-fit items-center space-x-2 border px-2.5 rounded-2xl">
                 {product.isOnSale ? (
                   <span className="flex items-center space-x-1 lg:space-x-1.5 xl:space-x-2">
                     <span className="text-neutral-500 text-lg xl:text-2xl line-through">
@@ -190,6 +265,7 @@ function ProductPage() {
                 </span>
               </div>
 
+              {/* Purchase Buttons */}
               <div className="flex space-x-1 lg:space-x-2 xl:space-x-2.25">
                 <button className="grow py-1.5 rounded-md xs:rounded-lg text-black bg-yellow-400 hover:bg-yellow-500 duration-150 ease-in-out cursor-pointer">
                   Add to Cart
@@ -202,32 +278,87 @@ function ProductPage() {
           </div>
         </div>
 
-        {/* Product Pricing - Hidden on md screens */}
-        <div className="flex flex-col mt-3 md:hidden">
-          <div className="flex items-center justify-between">
-            {product.isOnSale ? (
-              <span className="flex items-center space-x-1">
-                <span className="text-neutral-500 text-lg xs:text-xl line-through">
-                  ${product.price}
-                </span>
-                <span className="font-semibold text-lg xs:text-xl tracking-tight">
-                  ${product.salePrice}
-                </span>
-                <span className="text-green-600 tracking-tighter">
-                  {discountPercentage}% OFF
-                </span>
-              </span>
-            ) : (
-              <span className="font-black text-xl xs:text-2xl tracking-tight">
-                ${product.price}
-              </span>
-            )}
-
-            <span className="text-sm xs:text-lg font-black text-green-500 tracking-wide xs:tracking-normal">
-              In Stock
-            </span>
+        {/* Product Size/Pricing - Hidden on md screens */}
+        <div className="flex flex-col md:hidden mt-2.25 space-y-0.75">
+          {/* Size */}
+          <div className="mb-3.5">
+            <p className="font-bold tracking-tight leading-7">Select Size</p>
+            <ul className="grid grid-cols-3 gap-2">
+              {product.colorVariants?.[activeColorVariantIdx].inventory.map(
+                (size, index) => {
+                  return (
+                    <li key={size._key} className="flex">
+                      <button
+                        onClick={() => {
+                          if (size.stockCount === 0) return;
+                          setActiveSelectedSizeIdx(index);
+                          setSelectedItemQuantity(1);
+                        }}
+                        className={cn(
+                          "grow py-1 text-center border border-black/20 dark:border-white/25 hover:border-black dark:hover:border-white rounded-sm cursor-pointer",
+                          activeSelectedSizeIdx === index
+                            ? "border-black dark:border-white"
+                            : "",
+                          size.stockCount === 0
+                            ? "opacity-40 line-through border-black/20 hover:border-black/20 pointer-events-none"
+                            : ""
+                        )}
+                      >
+                        {size.shirtSize}
+                      </button>
+                    </li>
+                  );
+                }
+              )}
+            </ul>
           </div>
 
+          <div className="flex items-center justify-between">
+            {/* Drop Down Box */}
+            <div className="flex items-center space-x-2">
+              <DropDownBox
+                key={`${activeColorVariantIdx}-${activeSelectedSizeIdx}`}
+                placeholder="Quantity: "
+                listSize={totalStockCount}
+                selectedValue={selectedItemQuantity}
+                updateSelectedValue={setSelectedItemQuantity}
+                isPositionedUp
+                disabled={activeSelectedSizeIdx === null}
+              />
+
+              {totalStockCount !== 0 && totalStockCount <= 4 && (
+                <p className="text-red-500">
+                  Only {totalStockCount} left in stock.
+                </p>
+              )}
+            </div>
+
+            {/* Price */}
+            <div className="flex items-center space-x-2 border px-2.5 rounded-2xl">
+              {product.isOnSale ? (
+                <span className="flex items-center space-x-1">
+                  <span className="text-neutral-500 text-lg xs:text-xl line-through">
+                    ${product.price}
+                  </span>
+                  <span className="font-semibold text-lg xs:text-xl tracking-tight">
+                    ${product.salePrice}
+                  </span>
+                  <span className="text-green-600 tracking-tighter">
+                    {discountPercentage}% OFF
+                  </span>
+                </span>
+              ) : (
+                <span className="font-black text-xl xs:text-2xl tracking-tight">
+                  ${product.price}
+                </span>
+              )}
+              <span className="text-sm xs:text-lg font-black text-green-500 tracking-wide xs:tracking-normal">
+                In Stock
+              </span>
+            </div>
+          </div>
+
+          {/* Add to Cart */}
           <div className="flex justify-between space-x-1 sm:space-x-2">
             <button className="grow py-1 xs:py-1.5 rounded-lg xs:rounded-lg text-black bg-yellow-400 hover:bg-yellow-500 duration-150 ease-in-out cursor-pointer">
               Add to Cart
