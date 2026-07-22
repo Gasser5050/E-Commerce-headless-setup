@@ -68,11 +68,11 @@ function ProductPage() {
     <div className="grow bg-white-200 dark:bg-black/80 text-black dark:text-white transition-colors ease-in-out duration-300">
       <div className="text-black dark:text-white space-y-1.25 px-4 xs:px-6 sm:px-8 md:px-2 lg:px-10 xl:px-15 py-7 md:py-14 ">
         {/* Product Details - Hidden on md screens */}
-        <div className="md:hidden pb-px">
+        <div className="md:hidden pb-1.5">
           <h1 className="text-lg xs:text-xl sm:text-2xl font-bold tracking-tight">
             {product.name}
           </h1>
-          <p className="text-sm xs:text-md">{product.description}</p>
+          <p className="text-sm xs:text-md py-1">{product.description}</p>
         </div>
 
         {/* Image Gallery */}
@@ -179,7 +179,7 @@ function ProductPage() {
                 <h1 className="text-3xl font-mono tracking-tight">
                   {product.name}
                 </h1>
-                <p className="text-lg">{product.description}</p>
+                <p className="text-md xl:text-lg py-2">{product.description}</p>
               </div>
 
               {/* Sizes / Quantity */}
@@ -282,7 +282,7 @@ function ProductPage() {
         </div>
 
         {/* Product Size/Pricing - Hidden on md screens */}
-        <div className="flex flex-col md:hidden mt-2.25 space-y-0.75">
+        <div className="flex flex-col md:hidden mt-2.25 space-y-2">
           {/* Size */}
           <div className="mb-3.5">
             <p className="font-bold tracking-tight leading-7">Select Size</p>
@@ -321,7 +321,7 @@ function ProductPage() {
 
           <div className="flex items-center justify-between">
             {/* Drop Down Box */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 xs:space-x-px sm:space-x-2">
               <DropDownBox
                 key={`${activeColorVariantIdx}-${activeSelectedSizeIdx}`}
                 placeholder="Quantity: "
@@ -333,32 +333,32 @@ function ProductPage() {
               />
 
               {totalStockCount !== 0 && totalStockCount <= 4 && (
-                <p className="text-red-500">
+                <p className="text-xs xs:text-sm sm:text-md text-red-500 tracking-tighter sm:tracking-normal">
                   Only {totalStockCount} left in stock.
                 </p>
               )}
             </div>
 
             {/* Price */}
-            <div className="flex items-center space-x-2 border px-2.5 rounded-2xl">
+            <div className="flex items-center space-x-0.5  sm:space-x-2 border px-1.5 sm:px-2.5 rounded-2xl">
               {product.isOnSale ? (
-                <span className="flex items-center space-x-1">
-                  <span className="text-neutral-500 text-lg xs:text-xl line-through">
+                <div className="flex items-center space-x-1">
+                  <span className="text-neutral-500 text-sm xs:text-md sm:text-xl line-through">
                     ${product.price}
                   </span>
-                  <span className="font-semibold text-lg xs:text-xl tracking-tight">
+                  <span className="font-semibold text-md sm:text-xl tracking-tight">
                     ${product.salePrice}
                   </span>
-                  <span className="text-green-600 tracking-tighter">
+                  <span className="text-green-600 tracking-tighter hidden xs:block xs:text-sm sm:text-md">
                     {discountPercentage}% OFF
                   </span>
-                </span>
+                </div>
               ) : (
                 <span className="font-black text-xl xs:text-2xl tracking-tight">
                   ${product.price}
                 </span>
               )}
-              <span className="text-sm xs:text-lg font-black text-green-500 tracking-wide xs:tracking-normal">
+              <span className="text-sm xs:text-sm sm:text-lg font-black text-green-500 tracking-wide xs:tracking-normal">
                 In Stock
               </span>
             </div>
