@@ -48,7 +48,9 @@ function DropDownBox({
           "flex items-center justify-between space-x-1.25 px-2.5 border border-black/40 dark:border-white/25 hover:border-black dark:hover:border-white outline-0 shadow-2xl cursor-pointer disabled:opacity-50 disabled:pointer-events-none rounded-sm",
           isOpen && isPositionedUp ? "rounded-none rounded-b-sm" : "",
           isOpen && !isPositionedUp ? "rounded-none rounded-t-sm" : "",
-          disabled ? "bg-neutral-300 pointer-events-none" : ""
+          disabled
+            ? "bg-neutral-300 dark:bg-neutral-500 pointer-events-none"
+            : ""
         )}
       >
         <span>

@@ -1,6 +1,6 @@
 import { useThemeGrabber } from "../hooks/useThemeGrabber";
 
-function About() {
+function Cart() {
   const themeStyle = useThemeGrabber();
 
   return (
@@ -13,4 +13,4 @@ function About() {
   );
 }
 
-export default About;
+export default Cart;

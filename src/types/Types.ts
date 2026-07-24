@@ -42,3 +42,11 @@ export type SizeStock = {
   shoeSize: string;
   stockCount: number;
 };
+
+export type CartItem = {
+  cartItemId: `${string}-${number}-${number}`; //productId-colorIdx-sizeIdx
+  productId: string;
+  colorVariantIdx: number;
+  selectedSizeIdx: number;
+  quantity: number;
+};

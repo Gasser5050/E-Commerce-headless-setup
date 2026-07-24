@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import type { Product } from "../types/Types";
+import type { Product, CartItem } from "../types/Types";
 import { cn } from "../utils/cn";
 import { useLoaderData } from "react-router-dom";
 import DropDownBox from "../components/DropDownBox";
+import { useCartContext } from "../hooks/useCartContext";
 
 function ProductPage() {
   const product = useLoaderData<Product>();
@@ -13,6 +14,8 @@ function ProductPage() {
   >(null);
   const [selectedItemQuantity, setSelectedItemQuantity] = useState(1);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+
+  const { addToCart } = useCartContext();
 
   const totalStockCount =
     activeSelectedSizeIdx !== null
@@ -27,6 +30,25 @@ function ProductPage() {
     product.price && product.isOnSale && product.salePrice
       ? Math.floor(((product.price - product.salePrice) / product.price) * 100)
       : 0;
+
+  function addToCartButton() {
+    if (activeSelectedSizeIdx === null) return;
+
+    const cartItem: CartItem = {
+      cartItemId: `${product._id}-${activeColorVariantIdx}-${activeSelectedSizeIdx}`,
+      productId: product._id,
+      colorVariantIdx: activeColorVariantIdx,
+      selectedSizeIdx: activeSelectedSizeIdx,
+      quantity: selectedItemQuantity
+    };
+
+    const stock =
+      product?.colorVariants?.[activeColorVariantIdx]?.inventory?.[
+        activeSelectedSizeIdx
+      ]?.stockCount || 0;
+      
+    addToCart(cartItem, stock);
+  }
 
   function handleMobileIndicatorClick(index: number) {
     setActiveImageIdx(index);
@@ -270,7 +292,15 @@ function ProductPage() {
 
               {/* Purchase Buttons */}
               <div className="flex space-x-1 lg:space-x-2 xl:space-x-2.25">
-                <button className="grow py-1.5 rounded-md xs:rounded-lg text-black bg-yellow-400 hover:bg-yellow-500 duration-150 ease-in-out cursor-pointer">
+                <button
+                  onClick={addToCartButton}
+                  disabled={activeSelectedSizeIdx === null}
+                  className={cn(
+                    "grow py-1.5 rounded-md xs:rounded-lg text-black bg-yellow-400 hover:bg-yellow-500 duration-150 ease-in-out cursor-pointer",
+                    activeSelectedSizeIdx === null &&
+                      "opacity-50 cursor-not-allowed"
+                  )}
+                >
                   Add to Cart
                 </button>
                 <button className="grow py-1.5 rounded-md xs:rounded-lg text-black bg-yellow-500 hover:bg-yellow-600 duration-150 ease-in-out cursor-pointer">
@@ -366,7 +396,15 @@ function ProductPage() {
 
           {/* Add to Cart */}
           <div className="flex justify-between space-x-1 sm:space-x-2">
-            <button className="grow py-1 xs:py-1.5 rounded-lg xs:rounded-lg text-black bg-yellow-400 hover:bg-yellow-500 duration-150 ease-in-out cursor-pointer">
+            <button
+              onClick={addToCartButton}
+              disabled={activeSelectedSizeIdx === null}
+              className={cn(
+                "grow py-1 xs:py-1.5 rounded-lg xs:rounded-lg text-black bg-yellow-400 hover:bg-yellow-500 duration-150 ease-in-out cursor-pointer",
+                activeSelectedSizeIdx === null &&
+                  "opacity-50 cursor-not-allowed"
+              )}
+            >
               Add to Cart
             </button>
             <button className="grow py-1 xs:py-1.5 rounded-lg xs:rounded-lg text-black bg-yellow-500 hover:bg-yellow-600 duration-150 ease-in-out cursor-pointer">

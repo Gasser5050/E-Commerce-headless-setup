@@ -1,12 +1,15 @@
 import { NavLink } from "react-router-dom";
 import ToggleView from "./ToggleView";
+import { useCartContext } from "../hooks/useCartContext";
 
 const NAV_LINKS = [
   { to: "/shop", label: "Shop" },
-  { to: "/About", label: "About Us" }
+  { to: "/cart", label: "Cart" }
 ];
 
 function Navbar() {
+  const { totalCartCount } = useCartContext();
+
   return (
     <header className="py-5 px-6 xs:px-8 sm:px-10 md:px-12 xl:px-14 shadow-xl bg-slate-800 dark:bg-slate-200 transition-all duration-200 ease-in-out">
       <nav className="flex items-center justify-between">
@@ -63,15 +66,22 @@ function Navbar() {
 
         <ul className="flex items-center space-x-3 xs:space-x-5 lg:space-x-6 text-sm xs:text-lg md:text-lg lg:text-xl font-mono tracking-wide">
           {NAV_LINKS.map(link => {
+            const isCart = link.label === "Cart";
+
             return (
               <li key={link.label}>
                 <NavLink
                   to={link.to}
                   className={({ isActive }) =>
-                    `relative pb-1.5 after:absolute after:left-1/2 after:bottom-0 after:-translate-x-1/2 after:h-0.5 after:duration-300 after:ease-in-out after:bg-current ${isActive ? "after:w-full" : "after:w-0 hover:after:w-full"}`
+                    `relative pb-1.5 after:absolute after:left-1/2 after:bottom-0 after:-translate-x-1/2 after:h-0.5 after:transition-[width] after:duration-300 after:ease-in-out after:bg-current ${isActive ? "after:w-full" : "after:w-0 hover:after:w-full"}`
                   }
                 >
                   {link.label}
+                  {isCart && totalCartCount !== 0 && (
+                    <span className="absolute -top-1/2 -right-2 flex justify-center items-center text-sm text-black dark:text-white bg-white dark:bg-black min-w-4 h-4 rounded-full">
+                      {totalCartCount}
+                    </span>
+                  )}
                 </NavLink>
               </li>
             );
