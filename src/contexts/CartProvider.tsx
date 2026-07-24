@@ -17,48 +17,47 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, 0);
 
   function addToCart(item: CartItem, maxStock: number) {
-    setCartItems(currentCart => {
-      const existingItem = currentCart.find(
-        cartItem => cartItem.cartItemId === item.cartItemId
-      );
+    const existingItem = cartItems.find(
+      cartItem => cartItem.cartItemId === item.cartItemId
+    );
 
-      const quantityInCart = existingItem ? existingItem.quantity : 0;
-      const requestedStock = quantityInCart + item.quantity;
+    const quantityInCart = existingItem ? existingItem.quantity : 0;
+    const requestedStock = item.quantity + quantityInCart;
 
-      if (requestedStock > maxStock) {
-        const allowedToAdd = maxStock - quantityInCart;
+    if (requestedStock > maxStock) {
+      const spaceLeftInCart = maxStock - quantityInCart;
 
-        if (allowedToAdd < 1) {
-          alert(
-            `You already have the maximum available stock (${maxStock}) in your cart!`
-          );
-          return currentCart;
-        }
-
+      if (spaceLeftInCart <= 0) {
         alert(
-          `Only ${allowedToAdd} more available. Added ${allowedToAdd} to your cart.`
+          `You already have the maximum available stock (${maxStock}) in your cart.`
         );
-
-        if (existingItem) {
-          return currentCart.map(cartItem => {
-            if (cartItem.cartItemId === item.cartItemId) {
-              return { ...cartItem, quantity: maxStock };
-            } else return cartItem;
-          });
-        } else return [...currentCart, { ...item, quantity: maxStock }];
+        return;
       }
 
       if (existingItem) {
-        return currentCart.map(cartItem => {
-          if (cartItem.cartItemId === item.cartItemId) {
-            return { ...cartItem, quantity: requestedStock };
-          }
-          return cartItem;
-        });
+        alert(
+          `Only ${spaceLeftInCart} more available. Added ${spaceLeftInCart} item(s) to reach maximum stock.`
+        );
+        updateItemQuantity(item.cartItemId, maxStock);
+        return;
       }
 
-      return [...currentCart, item];
-    });
+      alert(
+        `Only ${spaceLeftInCart} are available. Added ${spaceLeftInCart} item(s) to reach maximum stock.`
+      );
+      setCartItems(currentCart => [
+        ...currentCart,
+        { ...item, quantity: maxStock }
+      ]);
+      return;
+    }
+
+    if (existingItem) {
+      updateItemQuantity(item.cartItemId, requestedStock);
+      return;
+    }
+
+    setCartItems(currentCart => [...currentCart, item]);
   }
 
   function removeFromCart(itemId: CartItem["cartItemId"]) {

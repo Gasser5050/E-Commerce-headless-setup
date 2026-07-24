@@ -34,19 +34,42 @@ function ProductPage() {
   function addToCartButton() {
     if (activeSelectedSizeIdx === null) return;
 
+    const currentInventory =
+      product.colorVariants?.[activeColorVariantIdx]?.inventory?.[
+        activeSelectedSizeIdx
+      ];
+
+    const sizeName =
+      currentInventory?.pantSize ||
+      currentInventory?.shirtSize ||
+      currentInventory?.shoeSize ||
+      "";
+
+    const stock =
+      product?.colorVariants?.[activeColorVariantIdx]?.inventory?.[
+        activeSelectedSizeIdx
+      ]?.stockCount ?? 0;
+
+    const imageUrl =
+      product.colorVariants?.[activeColorVariantIdx]?.variantImages?.[0]?.url ??
+      "";
+
     const cartItem: CartItem = {
       cartItemId: `${product._id}-${activeColorVariantIdx}-${activeSelectedSizeIdx}`,
       productId: product._id,
       colorVariantIdx: activeColorVariantIdx,
       selectedSizeIdx: activeSelectedSizeIdx,
-      quantity: selectedItemQuantity
+      quantity: selectedItemQuantity,
+
+      // snapshot used only on frontend.
+      name: product.name,
+      price: product.price,
+      salePrice: product.salePrice,
+      sizeName,
+      stockCount: stock,
+      imageUrl
     };
 
-    const stock =
-      product?.colorVariants?.[activeColorVariantIdx]?.inventory?.[
-        activeSelectedSizeIdx
-      ]?.stockCount || 0;
-      
     addToCart(cartItem, stock);
   }
 
@@ -87,7 +110,7 @@ function ProductPage() {
   }, [product.colorVariants]);
 
   return (
-    <div className="grow bg-white-200 dark:bg-black/80 text-black dark:text-white transition-colors ease-in-out duration-300">
+    <div className="grow bg-slate-200 dark:bg-black/80 text-black dark:text-white transition-colors ease-in-out duration-300">
       <div className="text-black dark:text-white space-y-1.25 px-4 xs:px-6 sm:px-8 md:px-2 lg:px-10 xl:px-15 py-7 md:py-14 ">
         {/* Product Details - Hidden on md screens */}
         <div className="md:hidden pb-1.5">
@@ -224,7 +247,7 @@ function ProductPage() {
                               setSelectedItemQuantity(1);
                             }}
                             className={cn(
-                              "grow py-1 text-center border border-black/20 dark:border-white/25 hover:border-black dark:hover:border-white rounded-sm cursor-pointer",
+                              "grow py-1 text-center bg-white dark:bg-neutral-800/10 border border-black/20 dark:border-white/25 hover:border-black dark:hover:border-white rounded-sm cursor-pointer",
                               activeSelectedSizeIdx === index
                                 ? "border-black dark:border-white"
                                 : "",
@@ -328,7 +351,7 @@ function ProductPage() {
                           setSelectedItemQuantity(1);
                         }}
                         className={cn(
-                          "grow py-1 text-center border border-black/20 dark:border-white/25 hover:border-black dark:hover:border-white rounded-sm cursor-pointer",
+                          "grow py-1 text-center bg-white dark:bg-neutral-800/10 border border-black/20 dark:border-white/25 hover:border-black dark:hover:border-white rounded-sm cursor-pointer",
                           activeSelectedSizeIdx === index
                             ? "border-black dark:border-white"
                             : "",

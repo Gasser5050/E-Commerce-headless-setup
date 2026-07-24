@@ -49,4 +49,12 @@ export type CartItem = {
   colorVariantIdx: number;
   selectedSizeIdx: number;
   quantity: number;
+
+  // snapshot used only on frontend.
+  name: string;
+  price: number;
+  salePrice?: number;
+  imageUrl: string;
+  sizeName: string;
+  stockCount: number;
 };
